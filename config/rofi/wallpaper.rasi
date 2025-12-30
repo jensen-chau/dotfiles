@@ -1,0 +1,83 @@
+configuration {
+    show-icons: true;
+    display-drun: " ";
+    drun-display-format: "{name}";
+    disable-history: false;
+    sidebar-mode: false;
+    lines: 10;
+    columns: 1;
+    width: 700;
+    location: 0;
+    font: "FiraCode Nerd Font 12";
+}
+
+window {
+    background-color: rgba(30, 30, 46, 0.9);
+    border: 2px solid #cba6f7;
+    border-radius: 15px;
+    padding: 15px;
+}
+
+inputbar {
+    children: [prompt, entry];
+    background-color: rgba(49, 50, 68, 0.9);
+    border-radius: 10px;
+    padding: 5px;
+    margin: 0 0 10px 0;
+}
+
+prompt {
+    background-color: inherit;
+    text-color: #cba6f7;
+    padding: 0 10px;
+}
+
+entry {
+    background-color: inherit;
+    text-color: #cdd6f4;
+    placeholder: "搜索壁纸...";
+}
+
+listview {
+    background-color: transparent;
+    border-radius: 10px;
+    padding: 5px;
+    dynamic: true;
+    scrollbar: false;
+}
+
+element {
+    background-color: rgba(49, 50, 68, 0.7);
+    border-radius: 8px;
+    padding: 10px;
+    text-color: #cdd6f4;
+    orientation: horizontal;
+    children: [element-icon, element-text];
+    margin: 0 0 5px 0;
+}
+
+element selected {
+    background-color: rgba(203, 166, 247, 0.3);
+    border: 1px solid #cba6f7;
+    text-color: #f5e0dc;
+}
+
+element-icon {
+    size: 64;
+    vertical-align: 0.5;
+    margin: 0 15px 0 0;
+}
+
+element-text {
+    vertical-align: 0.5;
+    margin: 0 0 0 0;
+}
+
+message {
+    border: 2px solid #a6e3a1;
+    border-radius: 8px;
+    padding: 8px;
+    background-color: rgba(166, 227, 161, 0.1);
+    text-color: #a6e3a1;
+    margin: 0 0 5px 0;
+}
