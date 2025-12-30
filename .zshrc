@@ -29,13 +29,8 @@ function bliss {
 
 
 function update-dotfile {
-    cdcfg
-    git add ~/.config/nvim/*
-    git add ~/.config/waybar/*
-    git add ~/.config/rofi/*
-    git add ~/.config/wlogout/*
-    git add ~/.config/hypr/*
-    git add ~/.config/niri/*
+    cd ~/dotfiles 
+    git add .
     echo "save success"
     git commit -m "dotfile update"
     echo "commit success"

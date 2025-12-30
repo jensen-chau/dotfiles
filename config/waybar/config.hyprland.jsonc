@@ -1,13 +1,12 @@
 {
     "position": "top",
-        "modules-left": ["hyprland/workspaces", "cpu","memory","temperature","custom/wallpaper","custom/theme","custom/ai-chat","custom/weather"],
-        //"modules-left": ["niri/workspaces", "cpu","memory","temperature","custom/wallpaper","custom/theme","custom/ai-chat"],
-        "modules-center": ["clock", "idle_inhibitor"],
-        "modules-right": ["network", "bluetooth", "battery", "tray", "backlight", "pulseaudio", "custom/power"],
+    "modules-left": ["hyprland/workspaces", "cpu","memory","temperature","custom/wallpaper","custom/theme","custom/ai-chat","custom/weather"],
+    "modules-center": ["clock", "idle_inhibitor"],
+    "modules-right": ["network", "bluetooth", "battery", "tray", "backlight", "pulseaudio", "custom/power"],
 
-        "niri/workspaces": {
-            "format": "{index}",
-            "format-icons": {
+    "niri/workspaces": {
+        "format": "{index}",
+        "format-icons": {
             // Named workspaces
             // (you need to configure them in niri)
             "browser": "",
@@ -16,18 +15,18 @@
             // Icons by state
             "active": "",
             "default": ""
-            }
+        }
+    },
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "",
+            "deactivated": ""
         },
-        "idle_inhibitor": {
-            "format": "{icon}",
-            "format-icons": {
-                "activated": "",
-                "deactivated": ""
-            },
-        },
-        "cpu": {
-            "interval": 1,
-            "format": "{icon0}{icon1}{icon2}{icon3}{icon4}{icon5}{icon6}{icon7}",
+    },
+    "cpu": {
+        "interval": 1,
+        "format": "{icon0}{icon1}{icon2}{icon3}{icon4}{icon5}{icon6}{icon7}",
         "format-icons": [
             "<span color='#69ff94'>▁</span>", // green
             "<span color='#2aa9ff'>▂</span>", // blue
