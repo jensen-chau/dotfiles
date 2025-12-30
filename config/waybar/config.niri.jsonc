@@ -1,7 +1,7 @@
 {
     "position": "top",
         //"modules-left": ["hyprland/workspaces", "cpu","memory","temperature","custom/wallpaper","custom/theme","custom/deepseek"],
-        "modules-left": ["niri/workspaces", "cpu","memory","temperature","custom/wallpaper","custom/theme","custom/ai-chat"],
+        "modules-left": ["niri/workspaces", "cpu","memory","temperature","custom/wallpaper","custom/theme","custom/ai-chat","custom/weather"],
         "modules-center": ["clock", "idle_inhibitor"],
         "modules-right": ["network", "bluetooth", "battery", "tray", "backlight", "pulseaudio", "custom/power"],
 
@@ -119,6 +119,12 @@
     "custom/theme": {
         "format": "󰔎",
         "on-click": "$HOME/.config/waybar/scripts/theme-change.sh"
+    },
+    "custom/weather": {
+        "exec": "$HOME/.config/waybar/scripts/weather.sh",
+        "interval": "600",
+        "format": "{text}",
+        "return-type": "json"
     },
     "custom/ai-chat": {
         "format": "𝓐𝓘",

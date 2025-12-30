@@ -1,26 +1,24 @@
 #!/bin/sh
 
-# 1. 通过 IP 获取当前位置的经纬度（使用 ipinfo.io，无需 API Key）
-GEO_DATA=$(curl -s https://ipinfo.io/json)
+# 1. 通过 IP 获取当前位置的经纬度（使用 ip-api.com，免费且无需 API Key）
+GEO_DATA=$(curl -s http://ip-api.com/json/)
 
 # 检查是否成功获取地理位置
-if [ -z "$GEO_DATA" ] || echo "$GEO_DATA" | grep -q "error"; then
+if [ -z "$GEO_DATA" ] || echo "$GEO_DATA" | jq -e '.status != "success"' > /dev/null 2>&1; then
     printf '{"text": "📍❓", "tooltip": "Failed to get location"}\n'
     exit 0
 fi
 
-# 提取经纬度（格式为 "lat,lon"）
-COORDS=$(echo "$GEO_DATA" | jq -r '.loc')
+# 提取经纬度和城市
+LAT=$(echo "$GEO_DATA" | jq -r '.lat // "null"')
+LON=$(echo "$GEO_DATA" | jq -r '.lon // "null"')
 CITY=$(echo "$GEO_DATA" | jq -r '.city // "Unknown"')
 
 # 如果没有坐标，返回错误
-if [ "$COORDS" = "null" ] || [ -z "$COORDS" ]; then
+if [ "$LAT" = "null" ] || [ "$LON" = "null" ] || [ -z "$LAT" ] || [ -z "$LON" ]; then
     printf '{"text": "📍❓", "tooltip": "Location unavailable"}\n'
     exit 0
 fi
-
-LAT=$(echo "$COORDS" | cut -d',' -f1)
-LON=$(echo "$COORDS" | cut -d',' -f2)
 
 # 2. 调用 Open-Meteo 获取天气
 URL="https://api.open-meteo.com/v1/forecast?latitude=$LAT&longitude=$LON&current=temperature_2m,weather_code"
@@ -52,5 +50,5 @@ case $WMO_CODE in
 esac
 
 # 4. 构造输出（Waybar 需要合法 JSON 行）
-printf '{"text": "%s %s°C", "tooltip": "📍 %s\\n🌡️ %s°C\\nCode: %s"}\n' \
-    "$ICON" "$TEMP" "$CITY" "$TEMP" "$WMO_CODE"
+printf '{"text": "%s %s°C", "tooltip": "📍 %s\\n🌡️ %s°C"}\n' \
+    "$ICON" "$TEMP" "$CITY" "$TEMP"
