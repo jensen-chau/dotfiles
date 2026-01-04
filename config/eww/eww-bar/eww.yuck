@@ -60,6 +60,9 @@
 (defpoll volume :interval "1s"
   "scripts/getvol")
 
+(defpoll volume_muted :interval "1s"
+  "scripts/getvol-muted")
+
 (defpoll time :interval "10s"
   "date '+%H:%M %b %d, %Y'")
 

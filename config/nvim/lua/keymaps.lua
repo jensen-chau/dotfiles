@@ -43,4 +43,3 @@ vim.keymap.set("n", "<F8>", ":FloatermPrev<CR>", opt)
 vim.keymap.set("n", "<F9>", ":FloatermNext<CR>", opt)
 vim.keymap.set("n", "<F12>", ":FloatermToggle<CR>", opt)
 
-

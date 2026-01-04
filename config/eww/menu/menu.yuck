@@ -1,0 +1,162 @@
+(defwidget menu []
+  (box :class "menu"
+       :orientation "v"
+       :space-evenly false
+       :spacing 0
+    ;; Header
+    (box :class "menu-header"
+      (label :text "系统菜单")
+      (eventbox :onhover "eww close menu"
+        (label :class "close-btn" :text "✕")))
+
+    (scroll :hscroll false :vscroll true
+      (box :class "menu-content"
+           :orientation "v"
+           :space-evenly false
+           :spacing 8
+        ;; Volume section
+        (box :class "menu-section"
+             :orientation "v"
+             :spacing 0
+          (box :class "section-header"
+               :orientation "h"
+               :space-evenly false
+            (label :class "section-icon" :text "🔊")
+            (label :class "section-title" :text "音量")
+            (label :class "section-value" :text "${volume}%"))
+          (box :class "slider-row"
+            (button :class "icon-btn"
+                    :onclick "amixer -D pulse sset Master 5%-"
+              (label :text "−"))
+            (scale :class "volume-slider"
+                   :min 0
+                   :max 100
+                   :value volume
+                   :onchange "amixer -D pulse sset Master {}%")
+            (button :class "icon-btn"
+                    :onclick "amixer -D pulse sset Master 5%+"
+              (label :text "+"))
+            (button :class "mute-btn"
+                    :onclick "amixer -D pulse sset Master toggle"
+              (label :text {volume_muted ? "🔇" : "🔊"}))))
+
+        ;; Brightness section
+        (box :class "menu-section"
+             :orientation "v"
+             :spacing 0
+          (box :class "section-header"
+               :orientation "h"
+               :space-evenly false
+            (label :class "section-icon" :text "💡")
+            (label :class "section-title" :text "亮度")
+            (label :class "section-value" :text "${brightness}%"))
+          (box :class "slider-row"
+            (button :class "icon-btn"
+                    :onclick "brightnessctl set 5%-"
+              (label :text "−"))
+            (scale :class "brightness-slider"
+                   :min 0
+                   :max 100
+                   :value brightness
+                   :onchange "brightnessctl set {}%")
+            (button :class "icon-btn"
+                    :onclick "brightnessctl set 5%+"
+              (label :text "+"))))
+
+        ;; WiFi section
+        (box :class "menu-section"
+             :orientation "v"
+             :spacing 0
+          (box :class "section-header"
+               :orientation "h"
+               :space-evenly false
+            (label :class "section-icon" :text "📶")
+            (label :class "section-title" :text "WiFi")
+            (label :class "section-status" :text {wifi_status}))
+          (box :class "network-list"
+               :orientation "v"
+               :spacing 4
+            (for network in wifi_networks
+              (button :class "network-item"
+                      :onclick "nmcli connection up \"${network.ssid}\""
+                (box :orientation "h"
+                     :space-evenly false
+                  (label :class "network-icon" :text {network.connected ? "✓" : "  "})
+                  (label :class "network-name" :text "${network.ssid}")
+                  (label :class "network-signal" :text "${network.signal}%"))))))
+
+        ;; Bluetooth section
+        (box :class "menu-section"
+             :orientation "v"
+             :spacing 0
+          (box :class "section-header"
+               :orientation "h"
+               :space-evenly false
+            (label :class "section-icon" :text "🔵")
+            (label :class "section-title" :text "蓝牙")
+            (label :class "section-status" :text {bluetooth_status}))
+          (box :class "device-list"
+               :orientation "v"
+               :spacing 4
+            (for device in bluetooth_devices
+              (button :class "device-item"
+                      :onclick "bluetoothctl connect ${device.mac}"
+                (box :orientation "h"
+                     :space-evenly false
+                  (label :class "device-icon" :text {device.connected ? "✓" : "  "})
+                  (label :class "device-name" :text "${device.name}"))))))
+
+        ;; Power section
+        (box :class "menu-section"
+             :orientation "v"
+             :spacing 0
+          (box :class "section-header"
+               :orientation "h"
+               :space-evenly false
+            (label :class "section-icon" :text "⚡")
+            (label :class "section-title" :text "电源"))
+          (box :class "power-row"
+            (button :class "power-btn"
+                    :onclick "systemctl suspend"
+              (box :orientation "v"
+                   :spacing 4
+                (label :class "power-icon" :text "😴")
+                (label :class "power-label" :text "睡眠")))
+            (button :class "power-btn"
+                    :onclick "systemctl reboot"
+              (box :orientation "v"
+                   :spacing 4
+                (label :class "power-icon" :text "🔄")
+                (label :class "power-label" :text "重启")))
+            (button :class "power-btn"
+                    :onclick "systemctl poweroff"
+              (box :orientation "v"
+                   :spacing 4
+                (label :class "power-icon" :text "⏻")
+                (label :class "power-label" :text "关机")))))))))
+
+(defwindow menu
+  :monitor 0
+  :windowtype "dialog"
+  :geometry (geometry :x "0%"
+                      :y "0%"
+                      :width "320px"
+                      :height "480px"
+                      :anchor "top right")
+  (menu))
+
+;; Variables
+(defpoll wifi_status :interval "2s"
+  "scripts/get-wifi-status")
+
+(defpoll wifi_networks :interval "5s"
+  "scripts/get-wifi-networks")
+
+(defpoll bluetooth_status :interval "2s"
+  "scripts/get-bluetooth-status")
+
+(defpoll bluetooth_devices :interval "5s"
+  "scripts/get-bluetooth-devices")
+
+(defpoll brightness :interval "0.5s"
+  "brightnessctl get | awk '{print int($1/255*100)}'")

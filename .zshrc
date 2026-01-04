@@ -13,8 +13,7 @@ alias cdcfg='cd ~/.config/'
 alias cdgithub='cd /mnt/newdisk/Project/github/'
 alias cdvm='cd /mnt/newdisk2/VM'
 alias cdProject='cd /mnt/newdisk/Project/'
-alias cdOpen='cd /mnt/newdisk/Project/C-project/opengl/'
-
+alias cdrust='cd /mnt/newdisk/Project/rustProject'
 #esp32
 alias get_idf='source /mnt/newdisk/Project/esp/esp-idf-v5.3.1/export.sh'
 export IDF_PATH='/mnt/newdisk/Project/esp/esp-idf-v5.3.1'

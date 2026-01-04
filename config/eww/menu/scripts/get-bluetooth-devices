@@ -1,0 +1,26 @@
+#!/bin/bash
+# Get available Bluetooth devices in JSON format
+
+echo "["
+first=true
+
+bluetoothctl devices | while read -r line; do
+    mac=$(echo "$line" | awk '{print $2}')
+    name=$(echo "$line" | cut -d' ' -f3-)
+
+    # Check if device is connected
+    connected=$(bluetoothctl info "$mac" 2>/dev/null | grep "Connected:" | awk '{print $2}')
+
+    if [ "$first" = true ]; then
+        first=false
+    else
+        echo ","
+    fi
+    echo "{"
+    echo "  \"mac\": \"$mac\","
+    echo "  \"name\": \"$name\","
+    echo "  \"connected\": $([ "$connected" = "yes" ] && echo "true" || echo "false")"
+    echo -n "}"
+done
+
+echo "]"

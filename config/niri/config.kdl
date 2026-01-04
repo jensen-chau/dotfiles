@@ -3,7 +3,6 @@
 // Check the wiki for a full description of the configuration:
 // https://yalter.github.io/niri/Configuration:-Introduction
 
-debug { render-drm-device "/dev/dri/card1"; }
 
 // Input device configuration.
 // Find the full list of options on the wiki:

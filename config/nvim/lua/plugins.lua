@@ -59,6 +59,7 @@ require("lazy").setup({
     -- 调试器
     'mfussenegger/nvim-dap',
     'rcarriga/nvim-dap-ui',
+    "nvim-dap-virtual-text",
     -- markdown
     {
         "iamcco/markdown-preview.nvim",
