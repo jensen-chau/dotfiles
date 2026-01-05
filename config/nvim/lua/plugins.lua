@@ -59,7 +59,19 @@ require("lazy").setup({
     -- 调试器
     'mfussenegger/nvim-dap',
     'rcarriga/nvim-dap-ui',
-    "nvim-dap-virtual-text",
+    "theHamsta/nvim-dap-virtual-text",
+    "nvim-neotest/nvim-nio",
+    -- DAP 适配器安装器
+    {
+        "jay-babu/mason-nvim-dap.nvim",
+        dependencies = { "williamboman/mason.nvim" },
+        config = function()
+            require("mason-nvim-dap").setup({
+                ensure_installed = { "codelldb" },
+                automatic_setup = true,
+            })
+        end,
+    },
     -- markdown
     {
         "iamcco/markdown-preview.nvim",

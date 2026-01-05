@@ -38,8 +38,5 @@ vim.keymap.set('v', '>', '>gv', opts)
 vim.keymap.set("n", "<A-h>", ":BufferLineCyclePrev<CR>", opt)
 vim.keymap.set("n", "<A-l>", ":BufferLineCycleNext<CR>", opt)
 
-vim.keymap.set("n", "<F7>", ":FloatermNew<CR>", opt)
-vim.keymap.set("n", "<F8>", ":FloatermPrev<CR>", opt)
-vim.keymap.set("n", "<F9>", ":FloatermNext<CR>", opt)
 vim.keymap.set("n", "<F12>", ":FloatermToggle<CR>", opt)
 
