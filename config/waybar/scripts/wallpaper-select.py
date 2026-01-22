@@ -497,50 +497,92 @@ class WallpaperEngine(QMainWindow):
         """应用选中的壁纸"""
         if not hasattr(self, 'selected_wallpaper'):
             return
-    
+
         try:
             wallpaper_path = self.selected_wallpaper['path']
-    
-            # 使用linux-wallpaperengine命令设置壁纸
-            # 添加nohup命令确保程序关闭后壁纸进程继续运行
+            wallpaper_type = self.selected_wallpaper['type'].lower()
+
+            '''
+            # 判断壁纸类型，视频类型使用 wallpaper-engine daemon，其他使用 linux-wallpaperengine
+            if wallpaper_type == "video":
+
+                # 检查 wallpaper-engine-daemon 是否在运行
+                check_cmd = ["pgrep", "-f", "wallpaper-engine-daemon"]
+                check_result = subprocess.run(check_cmd, capture_output=True, text=True)
+
+                if check_result.returncode != 0:
+                    # 没有运行的 daemon，先启动它
+                    daemon_cmd = ["nohup", "/usr/local/bin/wallpaper-engine-daemon", "&>", "/dev/null", "&"]
+                    subprocess.Popen(
+                        ' '.join(daemon_cmd),
+                        shell=True,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        text=True
+                    )
+                    # 等待 daemon 启动
+                    import time
+                    time.sleep(2)
+ 
+                # 执行 wallpaper-engine img PATH
+                img_cmd = ["/usr/local/bin/wallpaper-engine", "img", wallpaper_path]
+                subprocess.run(img_cmd, capture_output=True, text=True)
+
+                                # 视频类型：先终止 linux-wallpaper 进程
+                subprocess.run(["pkill", "linux-wallpaper"], capture_output=True, text=True)
+
+
+                # 将命令写入到脚本文件中
+                script_path = os.path.expanduser("~/.config/hypr/Scripts/wallpaper-engine-start.sh")
+                os.makedirs(os.path.dirname(script_path), exist_ok=True)
+
+                with open(script_path, 'w') as f:
+                    f.write("#!/bin/bash\n")
+                    f.write("# 终止 linux-wallpaper 进程\n")
+                    f.write("pkill linux-wallpaper 2>/dev/null\n")
+                    f.write("# 检查并启动 wallpaper-engine-daemon\n")
+                    f.write("if ! pgrep -f wallpaper-engine-daemon >/dev/null; then\n")
+                    f.write("    nohup /usr/local/bin/wallpaper-engine-daemon &>/dev/null &\n")
+                    f.write("    sleep 2\n")
+                    f.write("fi\n")
+                    f.write(f"# 设置壁纸\n")
+                    f.write(f"/usr/local/bin/wallpaper-engine img '{wallpaper_path}'\n")
+
+            else:'''
+            subprocess.run(["wallpaper-engine", "kill"], capture_output=True, text=True)
+
+                # 其他类型使用 linux-wallpaperengine
             cmd = ["nohup", "linux-wallpaperengine", wallpaper_path, "--screen-root", "eDP-1", "--scaling", "fill", "&>", "/dev/null", "&"]
-            # 改为后台启动linux-wallpaperengine，删除现有linux-wallpaperengine进程
-            # 检查是否有正在运行的linux-wallpaperengine进程
             check_cmd = ["pgrep", "linux-wallpaper"]
             check_result = subprocess.run(check_cmd, capture_output=True, text=True)
-    
+
             if check_result.returncode == 0:
-                # 有正在运行的进程，先终止它
                 terminate_cmd = ["pkill", "linux-wallpaper"]
-                subprocess.run(terminate_cmd, capture_output=True, text=True)
-    
-            # 启动新的linux-wallpaperengine进程，使用shell=True允许命令重定向
+            subprocess.run(terminate_cmd, capture_output=True, text=True)
             self.wallpaper_engine_process = subprocess.Popen(
-                ' '.join(cmd),  # 将列表转换为字符串
-                shell=True,  # 使用shell执行命令，支持nohup和重定向
+                ' '.join(cmd),
+                shell=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True
             )
-    
-            # 将命令写入到脚本文件中，以便系统启动时自动运行
+
+            # 将命令写入到脚本文件中
             script_path = os.path.expanduser("~/.config/hypr/Scripts/wallpaper-engine-start.sh")
-            # 确保目录存在
             os.makedirs(os.path.dirname(script_path), exist_ok=True)
-            
-            # 写入脚本内容
+                
             with open(script_path, 'w') as f:
                 f.write("#!/bin/bash\n")
-                f.write("# 终止已有的linux-wallpaper进程\n")
+                f.write("# 终止已有的 linux-wallpaper 进程\n")
                 f.write("pkill linux-wallpaper 2>/dev/null\n")
                 f.write("# 启动新的壁纸引擎进程\n")
                 f.write(f"nohup linux-wallpaperengine '{wallpaper_path}' --screen-root eDP-1 --scaling fill &>/dev/null &\n")
-            
+
             # 设置脚本为可执行权限
             os.chmod(script_path, 0o755)
-            
+
             print(f"壁纸已应用，命令已写入 {script_path}")
-    
+
         except Exception as e:
             QMessageBox.critical(self, "错误", f"执行命令时出错:\n{str(e)}")
 
